@@ -6,7 +6,7 @@ class UnqPtr {
 private:
     T* ptr;
 public:
-    UnqPtr(): ptr(nullptr){}
+    UnqPtr(): ptr(nullptr) {}
 
     UnqPtr(const T* pointer): ptr(pointer) {}
 
