@@ -24,6 +24,7 @@ public:
     virtual T Reduce(T (*func)(T, T), T initial) const = 0;
 
     virtual Sequence<T> operator=(const Sequence<T>& other) = 0;
+    virtual Sequence<T> operator=(Sequence<T>&& other) = 0;
 };
 
 #endif  // SEQUENCE_H
