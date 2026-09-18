@@ -15,26 +15,30 @@ private:
     Node* head;
     Node* tail;
 public:
-    LinkedList(const T* items, size_t count) {
-        head = nullptr;
-        tail = nullptr;
+    LinkedList(const T* items, size_t count): head(nullptr), tail(nullptr) {
         for (size_t index = 0; index < count; index++) {
             Append(items[index]);
         }
     }
 
-    LinkedList() {
-        head = nullptr;
-        tail = nullptr;
-    }
+    LinkedList(): head(nullptr), tail(nullptr) {}
 
-    LinkedList(const LinkedList<T> &list) {
-        head = nullptr;
-        tail = nullptr;
+    LinkedList(const LinkedList<T>& list): head(nullptr), tail(nullptr) {
         Node* copyFrom = list.head;
         while (copyFrom != nullptr) {
             Append(copyFrom->data);
             copyFrom = copyFrom->next;
+        }
+    }
+
+    LinkedList(LinkedList<T>&& list): head(nullptr), tail(nullptr) {
+        Node* copyFrom = list.head;
+        list.head = nullptr;
+        Node* next = nullptr;
+        while (copyFrom != nullptr) {
+            Append(copyFrom->data);
+            copyFrom = copyFrom->next;
+            delete copyFrom->prev;
         }
     }
 
@@ -147,6 +151,37 @@ public:
             concatenated->Append(otherNode->data);
         }
         return concatenated;
+    }
+
+    LinkedList<T> operator=(const LinkedList<T>& other) {
+        if (this != &other) {
+            Node* next;
+            while (head) {
+                next = head->next;
+                delete head;
+                head = next;
+            }
+            for (Node* otherHead = other.head; otherHead != nullptr; otherHead = otherHead->next) {
+                Append(otherHead->data);
+            }
+        }
+    }
+
+    LinkedList<T> operator=(LinkedList<T>&& other) {
+        if (this != &other) {
+            Node* next;
+            while (head) {
+                next = head->next;
+                delete head;
+                head = next;
+            }
+            while (other.head) {
+                Append(other.head->data);
+                next = other.head->next;
+                delete other.head;
+                other.head = next;
+            }
+        }
     }
 };
 

@@ -40,6 +40,19 @@ public:
         }
     }
 
+    DynamicArray(DynamicArray<T>&& dynamicArray): size(dynamicArray.GetSize()) {
+        if (size == 0) {
+            data = nullptr;
+            return;
+        }
+        data = new T[size];
+        for (size_t index = 0; index < size; index++) {
+            data[index] = dynamicArray.Get(index);
+        }
+        delete[] dynamicArray.data;
+        dynamicArray.size = 0;
+    }
+
     ~DynamicArray() {
         if (data) delete[] data;
     }
@@ -69,11 +82,24 @@ public:
         size = newSize;
     }
 
-    DynamicArray<T> operator=(const DynamicArray<T> &other) {
+    DynamicArray<T> operator=(const DynamicArray<T>& other) {
         if (data && this != &other) delete[] data;
         Resize(other.size);
         for (size_t index = 0; index < size; index++) {
             data[size] = other.data[size];
+        }
+        return *this;
+    }
+
+    DynamicArray<T> operator=(DynamicArray<T>&& other) {
+        if (data && this != &other) delete[] data;
+        Resize(other.size);
+        for (size_t index = 0; index < size; index++) {
+            data[size] = other.data[size];
+        }
+        if (other.data) {
+            delete[] other.data;
+            other.size = 0;
         }
         return *this;
     }
