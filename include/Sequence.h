@@ -3,7 +3,8 @@
 
 #include <cstdlib>  // size_t
 
-template <class T> class Sequence {
+template <class T>
+class Sequence {
 public:
     /*
      * Ссылка возвращается, когда редактируется данный экземпляр
