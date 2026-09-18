@@ -10,24 +10,30 @@ private:
 public:
     UnqPtr(): ptr(nullptr) {}
 
-    UnqPtr(const T* pointer): ptr(pointer) {}
+    template <class Derived>
+    UnqPtr(const Derived* pointer): ptr(dynamic_cast<T*>(pointer)) {}
 
-    UnqPtr(const UnqPtr<T>& other) = delete;
+    template <class Derived>
+    UnqPtr(const UnqPtr<Derived>& other) = delete;
 
-    UnqPtr(UnqPtr<T>&& other): ptr(other.ptr) {other = nullptr;}
+    template <class Derived>
+    UnqPtr(UnqPtr<Derived>&& other): ptr(dynamic_cast<T*>(other.ptr)) {other = nullptr;}
 
     ~UnqPtr() {if (ptr) delete ptr;}
 
-    UnqPtr<T> operator=(const T* pointer) {
+    template <class Derived>
+    UnqPtr<T> operator=(const Derived* pointer) {
         if (ptr) delete ptr;
-        ptr = pointer;
+        ptr = dynamic_cast<T*>(pointer);
     }
 
-    UnqPtr<T> operator=(const UnqPtr<T>& other) = delete;
+    template <class Derived>
+    UnqPtr<T> operator=(const UnqPtr<Derived>& other) = delete;
 
-    UnqPtr<T> operator=(UnqPtr<T>&& other) {
+    template <class Derived>
+    UnqPtr<T> operator=(UnqPtr<Derived>&& other) {
         if (ptr) delete ptr;
-        ptr = other.ptr;
+        ptr = dynamic_cast<T*>(other.ptr);
         other.ptr = nullptr;
     }
 
