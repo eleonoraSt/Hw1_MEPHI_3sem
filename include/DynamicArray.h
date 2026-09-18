@@ -10,29 +10,30 @@ private:
     T* data;
     size_t size;
 public:
-    DynamicArray(const T* items, size_t count) {
-        size = count;
-        if (count == 0) {
+    DynamicArray(const T* items, size_t count): size(count) {
+        if (size == 0) {
             data = nullptr;
             return;
         }
-        data = new T[count];
-        for (size_t index = 0; index < count; index++) {
+        data = new T[size];
+        for (size_t index = 0; index < size; index++) {
             data[index] = items[index];
         }
     }
 
-    DynamicArray(size_t count) {
-        size = count;
-        if (count == 0) {
+    DynamicArray(size_t count): size(count) {
+        if (size == 0) {
             data = nullptr;
             return;
         }
-        data = new T[count];
+        data = new T[size];
     }
 
-    DynamicArray(const DynamicArray<T>& dynamicArray) {
-        size = dynamicArray.GetSize();
+    DynamicArray(const DynamicArray<T>& dynamicArray): size(dynamicArray.GetSize()) {
+        if (size == 0) {
+            data = nullptr;
+            return;
+        }
         data = new T[size];
         for (size_t index = 0; index < size; index++) {
             data[index] = dynamicArray.Get(index);
