@@ -11,7 +11,7 @@ public:
     virtual T GetFirst() const = 0;
     virtual T GetLast() const = 0;
     virtual T Get(size_t index) const = 0;
-    virtual Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) const = 0;
+    virtual Sequence<T>* GetSubsequence(size_t startIndex, size_t endIndex) const = 0;  // не включая endIndex
     virtual size_t GetLength() const = 0;
 
     virtual Sequence<T>* Append(T item) = 0;
@@ -22,9 +22,6 @@ public:
     virtual Sequence<T>* Map(T (*func)(T)) const = 0;
     virtual Sequence<T>* Where(bool (*func)(T)) const = 0;
     virtual T Reduce(T (*func)(T, T), T initial) const = 0;
-
-    virtual Sequence<T> operator=(const Sequence<T>& other) = 0;
-    virtual Sequence<T> operator=(Sequence<T>&& other) = 0;
 };
 
 #endif  // SEQUENCE_H
