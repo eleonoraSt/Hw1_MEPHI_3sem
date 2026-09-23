@@ -42,7 +42,8 @@ public:
     ArraySequence(ArraySequence<T>&& other) {
         seq = other.seq;
         size = other.GetLength();
-        other = ArraySequence();
+        other.seq = nullptr;
+        other.size = 0;
     }
 
     ~ArraySequence() override {
@@ -173,7 +174,8 @@ public:
         if (seq) delete seq;
         seq = other.seq;
         size = other.GetLength();
-        other = ArraySequence();
+        other.seq = nullptr;
+        other.size = 0;
         return this;
     }
 
