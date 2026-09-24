@@ -3,45 +3,33 @@
 
 #include "Sequence.h"
 #include "DynamicArray.h"
+#include "UnqPtr.h"
 
 #include <functional>  // map-reduce
 
-#define CAPACITY_ADD 10  // То есть шаг увеличения capacity равен этому
+#define CAPACITY_ADD 10  // Шаг увеличения capacity
 
 template <class T> class ArraySequence: public Sequence<T> {
 private:
-    DynamicArray<T>* seq;
+    UnqPtr<DynamicArray<T>> seq;
     size_t size;  // capacity - это seq->GetSize()
 public:
-    ArraySequence(const T* items, size_t count) {
-        seq = new DynamicArray<T>(items, count);
-        size = count;
-    }
+    ArraySequence(const T* items, size_t count): seq(new DynamicArray<T>(items, count)), size(count) {}
 
-    ArraySequence() {
-        seq = new DynamicArray<T>(CAPACITY_ADD);  // сейчас добавлять будут
-        size = 0;
-    }
+    // сейчас добавлять будут
+    ArraySequence(): seq(new DynamicArray<T>(CAPACITY_ADD)), size(0) {}
 
-    ArraySequence(const DynamicArray<T>& dynamicArray) {
-        seq = new DynamicArray<T>(dynamicArray);
+    ArraySequence(const DynamicArray<T>& dynamicArray): seq(new DynamicArray<T>(dynamicArray)) {
         size = dynamicArray.size;
     }
 
-    ArraySequence(DynamicArray<T>&& dynamicArray) {
-        seq = &dynamicArray;
-        size = dynamicArray.size;
+    ArraySequence(DynamicArray<T>&& dynamicArray): seq(make_unq(dynamicArray)), size(dynamicArray.size) {
         dynamicArray = DynamicArray<T>(0);
     }
 
-    ArraySequence(const ArraySequence<T>& other) {
-        seq = new DynamicArray<T>(*other.seq);
-        size = other.GetLength();
-    }
+    ArraySequence(const ArraySequence<T>& other): seq(new DynamicArray<T>(*other.seq)), size(other.GetLength()) {}
 
-    ArraySequence(ArraySequence<T>&& other) {
-        seq = other.seq;
-        size = other.GetLength();
+    ArraySequence(ArraySequence<T>&& other): seq(other.seq), size(other.GetLength()) {
         other.seq = nullptr;
         other.size = 0;
     }

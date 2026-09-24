@@ -48,4 +48,9 @@ public:
     }
 };
 
+template <class T, class... Args>
+UnqPtr<T> make_unq(Args&... args) {
+    return UnqPtr<T>(new T(args...));
+}
+
 #endif // UNQPTR_H
