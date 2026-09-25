@@ -2,6 +2,7 @@
 #define SEQUENCE_H
 
 #include <cstdlib>  // size_t
+#include <functional>  // map-reduce - нужно для всех реализаций
 
 template <class T>
 class Sequence {

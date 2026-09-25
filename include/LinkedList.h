@@ -83,7 +83,7 @@ public:
             }
             item = item->next;
         }
-        for (index = startIndex; index <= endIndex; index++) {
+        for (index = startIndex; index < endIndex; index++) {
             if (item == nullptr) {  // Конечный индекс больше размера массива
                 delete sublist;
                 throw std::out_of_range("linked list: index error");

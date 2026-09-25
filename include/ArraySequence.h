@@ -5,8 +5,6 @@
 #include "DynamicArray.h"
 #include "UnqPtr.h"
 
-#include <functional>  // map-reduce
-
 #define CAPACITY_ADD 10  // Шаг увеличения capacity
 
 template <class T> class ArraySequence: public Sequence<T> {
@@ -164,7 +162,7 @@ public:
         size = other.GetLength();
         other.seq = nullptr;
         other.size = 0;
-        return this;
+        return *this;
     }
 
     bool operator==(const ArraySequence<T>& other) {
