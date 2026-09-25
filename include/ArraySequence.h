@@ -147,6 +147,14 @@ public:
         return *this;
     }
 
+    ArraySequence<T> operator=(DynamicArray<T>&& other) {
+        if (seq) delete seq;
+        seq = make_unq(other);
+        size = other.GetSize();
+        other = DynamicArray<T>();
+        return *this;
+    }
+
     ArraySequence<T> operator=(const ArraySequence<T>& other) {
         if (this == &other) return *this;
         if (seq) delete seq;
