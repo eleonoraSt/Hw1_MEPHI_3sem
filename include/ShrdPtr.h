@@ -67,4 +67,9 @@ public:
     }
 };
 
+template <class T, class... Args>
+ShrdPtr<T> make_shrd(Args&... args) {
+    return ShrdPtr(new T(args...));
+}
+
 #endif // SHRDPTR_H
