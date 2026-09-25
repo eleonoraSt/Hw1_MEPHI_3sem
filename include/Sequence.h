@@ -2,7 +2,7 @@
 #define SEQUENCE_H
 
 #include <cstdlib>  // size_t
-#include <functional>  // map-reduce - нужно для всех реализаций
+#include <functional>  // map-reduce
 
 template <class T>
 class Sequence {
@@ -20,9 +20,9 @@ public:
     virtual Sequence<T>* InsertAt(T item, size_t index) = 0;
     virtual Sequence<T>* Concat(Sequence<T>& list) = 0;
 
-    virtual Sequence<T>* Map(T (*func)(T)) const = 0;
-    virtual Sequence<T>* Where(bool (*func)(T)) const = 0;
-    virtual T Reduce(T (*func)(T, T), T initial) const = 0;
+    virtual Sequence<T>* Map(std::function<T(T)> func) const = 0;
+    virtual Sequence<T>* Where(std::function<bool(T)> func) const = 0;
+    virtual T Reduce(std::function<T(T, T)> func, T initial) const = 0;
 };
 
 #endif  // SEQUENCE_H
