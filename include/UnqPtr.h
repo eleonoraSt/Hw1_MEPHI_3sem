@@ -2,22 +2,31 @@
 #define UNQPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
+#include <functional>  // deleters
+
+#include "deleters.h"
 
 template <class T>
 class UnqPtr {
 private:
     T* ptr;
+    std::function<void(T*)> deleter;
 public:
-    UnqPtr(): ptr(nullptr) {}
+    UnqPtr(): ptr(nullptr), deleter(default_delete) {}
 
     template <class Derived>
-    UnqPtr(const Derived* pointer): ptr(dynamic_cast<T*>(pointer)) {}
+    UnqPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete){
+        ptr = dynamic_cast<T*>(pointer);
+        deleter = deleteFunc;
+    }
 
     template <class Derived>
     UnqPtr(const UnqPtr<Derived>& other) = delete;
 
     template <class Derived>
-    UnqPtr(UnqPtr<Derived>&& other): ptr(dynamic_cast<T*>(other.ptr)) {other = nullptr;}
+    UnqPtr(UnqPtr<Derived>&& other): ptr(dynamic_cast<T*>(other.ptr)), deleter(other.deleter) {
+        other = nullptr;
+    }
 
     ~UnqPtr() {if (ptr) delete ptr;}
 
@@ -25,6 +34,7 @@ public:
     UnqPtr<T> operator=(const Derived* pointer) {
         if (ptr) delete ptr;
         ptr = dynamic_cast<T*>(pointer);
+        deleter = default_delete;  // небезопасный момент
     }
 
     template <class Derived>
@@ -34,6 +44,7 @@ public:
     UnqPtr<T> operator=(UnqPtr<Derived>&& other) {
         if (ptr) delete ptr;
         ptr = dynamic_cast<T*>(other.ptr);
+        deleter = other.deleter;
         other.ptr = nullptr;
     }
 
@@ -50,7 +61,12 @@ public:
 
 template <class T, class... Args>
 UnqPtr<T> make_unq(Args&... args) {
-    return UnqPtr<T>(new T(args...));
+    return UnqPtr<T>(new T(args...), default_delete);
+}
+
+template <class T>
+UnqPtr<T> make_unq_array(size_t size) {
+    return UnqPtr<T>(new T[size], array_delete);
 }
 
 #endif // UNQPTR_H
