@@ -5,6 +5,8 @@
 #include "DynamicArray.h"
 #include "UnqPtr.h"
 
+#include <utility>
+
 #define CAPACITY_ADD 10  // Шаг увеличения capacity
 
 template <class T> class ArraySequence: public Sequence<T> {
@@ -27,8 +29,7 @@ public:
 
     ArraySequence(const ArraySequence<T>& other): seq(new DynamicArray<T>(*other.seq)), size(other.GetLength()) {}
 
-    ArraySequence(ArraySequence<T>&& other): seq(other.seq), size(other.GetLength()) {
-        other.seq = nullptr;
+    ArraySequence(ArraySequence<T>&& other): seq(std::move(other.seq)), size(other.GetLength()) {
         other.size = 0;
     }
 
@@ -166,9 +167,8 @@ public:
     ArraySequence<T> operator=(ArraySequence<T>&& other) {
         if (this == &other) return *this;
         if (seq) delete seq;
-        seq = other.seq;
+        seq = std::move(other.seq);
         size = other.GetLength();
-        other.seq = nullptr;
         other.size = 0;
         return *this;
     }

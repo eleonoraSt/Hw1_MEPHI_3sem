@@ -3,10 +3,11 @@
 
 #include "Sequence.h"
 #include "LinkedList.h"
+#include "UnqPtr.h"
 
 template <class T> class ListSequence: public Sequence<T> {
 private:
-    LinkedList<T>* seq;
+    UnqPtr<LinkedList<T>> seq;
     size_t length;
 public:
     ListSequence(const T* items, size_t count): seq(new LinkedList<T>(items, count)), length(count) {}
@@ -17,14 +18,14 @@ public:
         length = linkedList.GetLength();
     }
 
-    ListSequence(LinkedList<T>&& linkedList): seq(&linkedList), length(linkedList.GetLength()) {
+    ListSequence(LinkedList<T>&& linkedList): seq(make_unq(linkedList)), length(linkedList.GetLength()) {
         linkedList = LinkedList<T>();
     }
 
     ListSequence(const ListSequence<T>& other): seq(new LinkedList<T>(*other.seq)), length(other.length) {}
 
-    ListSequence(ListSequence<T>&& other): seq(other.seq), length(other.length) {
-        other = ListSequence<T>();
+    ListSequence(ListSequence<T>&& other): seq(std::move(other.seq)), length(other.length) {
+        other.length = 0;
     }
 
     ~ListSequence() override {
@@ -123,7 +124,7 @@ public:
 
     ListSequence<T> operator=(LinkedList<T>&& other) {
         if (seq) delete seq;
-        seq = &other;
+        seq = make_unq(other);
         length = other.GetLength();
         other = LinkedList<T>();
         return *this;
@@ -140,9 +141,8 @@ public:
     ListSequence<T> operator=(ListSequence<T>&& other) {
         if (this == &other) return *this;
         if (seq) delete seq;
-        seq = other.seq;
+        seq = std::move(other.seq);
         length = other.length;
-        other.seq = nullptr;
         other.length = 0;
         return *this;
     }
