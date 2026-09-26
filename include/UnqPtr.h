@@ -28,11 +28,11 @@ public:
         other = nullptr;
     }
 
-    ~UnqPtr() {if (ptr) delete ptr;}
+    ~UnqPtr() {if (ptr) deleter(ptr);}
 
     template <class Derived>
     UnqPtr<T> operator=(const Derived* pointer) {
-        if (ptr) delete ptr;
+        if (ptr) deleter(ptr);
         ptr = dynamic_cast<T*>(pointer);
         deleter = default_delete;  // небезопасный момент
     }
@@ -42,7 +42,7 @@ public:
 
     template <class Derived>
     UnqPtr<T> operator=(UnqPtr<Derived>&& other) {
-        if (ptr) delete ptr;
+        if (ptr) deleter(ptr);
         ptr = dynamic_cast<T*>(other.ptr);
         deleter = other.deleter;
         other.ptr = nullptr;
