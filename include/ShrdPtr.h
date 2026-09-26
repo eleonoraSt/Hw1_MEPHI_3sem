@@ -68,13 +68,21 @@ public:
     ShrdPtr<T> operator=(const ShrdPtr<Derived>&& other) = delete;
 
     T& operator*() {
+        if (deleter == array_delete) throw std::invalid_argument("* not defined for array shared pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
-        return ptr;
+        return *ptr;
     }
 
     T& operator->() {
+        if (deleter == array_delete) throw std::invalid_argument("-> not defined for array shared pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
-        return ptr;
+        return *ptr;
+    }
+
+    T& operator[](size_t index) {
+        if (deleter == default_delete) throw std::invalid_argument("[] not defined for non-array shared pointers");
+        if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
+        return ptr[index];
     }
 };
 

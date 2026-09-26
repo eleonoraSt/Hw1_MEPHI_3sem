@@ -49,13 +49,21 @@ public:
     }
 
     T& operator*() {
+        if (deleter == array_delete) throw std::invalid_argument("* not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
     }
 
     T& operator->() {
+        if (deleter == array_delete) throw std::invalid_argument("-> not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
+    }
+
+    T& operator[](size_t index) {
+        if (deleter == default_delete) throw std::invalid_argument("[] not defined for non-array unique pointers");
+        if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
+        return ptr[index];
     }
 };
 
