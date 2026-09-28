@@ -12,10 +12,10 @@ private:
     T* ptr;
     std::function<void(T*)> deleter;
 public:
-    UnqPtr(): ptr(nullptr), deleter(default_delete) {}
+    UnqPtr(): ptr(nullptr), deleter(default_delete<T>) {}
 
     template <class Derived>
-    UnqPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete){
+    UnqPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
         ptr = dynamic_cast<T*>(pointer);
         deleter = deleteFunc;
     }
@@ -27,6 +27,15 @@ public:
     UnqPtr(UnqPtr<Derived>&& other): ptr(dynamic_cast<T*>(other.ptr)), deleter(other.deleter) {
         other = nullptr;
     }
+    /*
+    UnqPtr(const T* pointer, std::function<void(T*)> deleteFunc=default_delete): ptr(pointer), deleter(deleteFunc) {}
+
+    UnqPtr(const UnqPtr<T>& other) = delete;
+
+    UnqPtr(UnqPtr<T>&& other): ptr(other.ptr), deleter(other.deleter) {
+        other = nullptr;
+    }
+*/
 
     ~UnqPtr() {if (ptr) deleter(ptr);}
 
@@ -34,7 +43,7 @@ public:
     UnqPtr<T> operator=(const Derived* pointer) {
         if (ptr) deleter(ptr);
         ptr = dynamic_cast<T*>(pointer);
-        deleter = default_delete;  // небезопасный момент
+        deleter = default_delete<T>;  // небезопасный момент
     }
 
     template <class Derived>
@@ -49,32 +58,32 @@ public:
     }
 
     T& operator*() {
-        if (deleter == array_delete) throw std::invalid_argument("* not defined for array unique pointers");
+        if (deleter == array_delete<T>) throw std::invalid_argument("* not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
     }
 
     T& operator->() {
-        if (deleter == array_delete) throw std::invalid_argument("-> not defined for array unique pointers");
+        if (deleter == array_delete<T>) throw std::invalid_argument("-> not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
     }
 
     T& operator[](size_t index) {
-        if (deleter == default_delete) throw std::invalid_argument("[] not defined for non-array unique pointers");
+        if (deleter == default_delete<T>) throw std::invalid_argument("[] not defined for non-array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return ptr[index];
     }
 };
 
 template <class T, class... Args>
-UnqPtr<T> make_unq(Args&... args) {
-    return UnqPtr<T>(new T(args...), default_delete);
+UnqPtr<T> make_unq(Args&&... args) {
+    return UnqPtr<T>(new T(args...), default_delete<T>);
 }
 
 template <class T>
 UnqPtr<T> make_unq_array(size_t size) {
-    return UnqPtr<T>(new T[size], array_delete);
+    return UnqPtr<T>(new T[size], array_delete<T>);
 }
 
 #endif // UNQPTR_H

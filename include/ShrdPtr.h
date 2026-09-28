@@ -13,10 +13,10 @@ private:
     unsigned int* count;
     std::function<void(T*)> deleter;
 public:
-    ShrdPtr(): ptr(nullptr), count(new unsigned int(1)), deleter(default_delete) {}
+    ShrdPtr(): ptr(nullptr), count(new unsigned int(1)), deleter(default_delete<T>) {}
 
     template <class Derived>
-    ShrdPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete) {
+    ShrdPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
         ptr = dynamic_cast<T*>(pointer);
         count = new unsigned int(1);
         deleter = deleteFunc;
@@ -48,7 +48,7 @@ public:
         }
         ptr = dynamic_cast<T*>(pointer);
         count = new unsigned int(1);
-        deleter = default_delete;  // небезопасный момент
+        deleter = default_delete<T>;  // небезопасный момент
     }
 
     template <class Derived>
@@ -68,32 +68,32 @@ public:
     ShrdPtr<T> operator=(const ShrdPtr<Derived>&& other) = delete;
 
     T& operator*() {
-        if (deleter == array_delete) throw std::invalid_argument("* not defined for array shared pointers");
+        if (deleter == array_delete<T>) throw std::invalid_argument("* not defined for array shared pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
         return *ptr;
     }
 
     T& operator->() {
-        if (deleter == array_delete) throw std::invalid_argument("-> not defined for array shared pointers");
+        if (deleter == array_delete<T>) throw std::invalid_argument("-> not defined for array shared pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
         return *ptr;
     }
 
     T& operator[](size_t index) {
-        if (deleter == default_delete) throw std::invalid_argument("[] not defined for non-array shared pointers");
+        if (deleter == default_delete<T>) throw std::invalid_argument("[] not defined for non-array shared pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
         return ptr[index];
     }
 };
 
 template <class T, class... Args>
-ShrdPtr<T> make_shrd(Args&... args) {
-    return ShrdPtr(new T(args...), default_delete);
+ShrdPtr<T> make_shrd(Args&&... args) {
+    return ShrdPtr(new T(args...), default_delete<T>);
 }
 
 template <class T>
 ShrdPtr<T> make_shrd_array(size_t size) {
-    return ShrdPtr<T>(new T[size], array_delete);
+    return ShrdPtr<T>(new T[size], array_delete<T>);
 }
 
 #endif // SHRDPTR_H
