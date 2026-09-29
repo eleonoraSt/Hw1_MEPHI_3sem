@@ -16,14 +16,16 @@ public:
     ShrdPtr(): ptr(nullptr), count(new unsigned int(1)), deleter(default_delete<T>) {}
 
     template <class Derived>
-    ShrdPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
+    ShrdPtr(Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
         ptr = dynamic_cast<T*>(pointer);
+        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
         count = new unsigned int(1);
         deleter = deleteFunc;
     }
 
     template <class Derived>
     ShrdPtr(const ShrdPtr<Derived>& other): ptr(dynamic_cast<T*>(other.ptr)), count(new unsigned int(1)) {
+        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
         deleter = other.deleter;
         (*count)++;
     }
@@ -40,13 +42,14 @@ public:
     }
 
     template <class Derived>
-    ShrdPtr<T> operator=(const Derived* pointer) {
+    ShrdPtr<T> operator=(Derived* pointer) {
         (*count)--;
         if (count == 0) {
             if (ptr) deleter(ptr);
             delete count;
         }
         ptr = dynamic_cast<T*>(pointer);
+        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
         count = new unsigned int(1);
         deleter = default_delete<T>;  // небезопасный момент
     }
@@ -59,6 +62,7 @@ public:
             delete count;
         }
         ptr = dynamic_cast<T*>(other);
+        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
         count = other.count;
         deleter = other.deleter;
         (*count)++;

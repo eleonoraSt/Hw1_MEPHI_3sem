@@ -15,8 +15,9 @@ public:
     UnqPtr(): ptr(nullptr), deleter(default_delete<T>) {}
 
     template <class Derived>
-    UnqPtr(const Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
+    UnqPtr(Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
         ptr = dynamic_cast<T*>(pointer);
+        if (ptr == nullptr) throw std::invalid_argument("unique pointer conversion failed");
         deleter = deleteFunc;
     }
 
@@ -25,24 +26,17 @@ public:
 
     template <class Derived>
     UnqPtr(UnqPtr<Derived>&& other): ptr(dynamic_cast<T*>(other.ptr)), deleter(other.deleter) {
+        if (ptr == nullptr) throw std::invalid_argument("unique pointer conversion failed");
         other = nullptr;
     }
-    /*
-    UnqPtr(const T* pointer, std::function<void(T*)> deleteFunc=default_delete): ptr(pointer), deleter(deleteFunc) {}
-
-    UnqPtr(const UnqPtr<T>& other) = delete;
-
-    UnqPtr(UnqPtr<T>&& other): ptr(other.ptr), deleter(other.deleter) {
-        other = nullptr;
-    }
-*/
 
     ~UnqPtr() {if (ptr) deleter(ptr);}
 
     template <class Derived>
-    UnqPtr<T> operator=(const Derived* pointer) {
+    UnqPtr<T> operator=(Derived* pointer) {
         if (ptr) deleter(ptr);
         ptr = dynamic_cast<T*>(pointer);
+        if (ptr == nullptr) throw std::invalid_argument("unique pointer conversion failed");
         deleter = default_delete<T>;  // небезопасный момент
     }
 
@@ -53,6 +47,7 @@ public:
     UnqPtr<T> operator=(UnqPtr<Derived>&& other) {
         if (ptr) deleter(ptr);
         ptr = dynamic_cast<T*>(other.ptr);
+        if (ptr == nullptr) throw std::invalid_argument("unique pointer conversion failed");
         deleter = other.deleter;
         other.ptr = nullptr;
     }
