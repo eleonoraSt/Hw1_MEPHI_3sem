@@ -30,6 +30,24 @@ private slots:
         QCOMPARE(pointer[0], 10);
     }
 
+    void ptr_constructor() {
+        UnqPtr<int> ptr(new int(2));
+        QCOMPARE(*ptr, 2);
+    }
+
+    void array_constructor() {
+        int* constructFrom = new int[5];
+        constructFrom[2] = 10;
+        UnqPtr<int> ptr(constructFrom, array_delete<int>);
+        QCOMPARE(ptr[2], 10);
+    }
+
+    void ptr_assignment() {
+        UnqPtr<int> ptr;
+        ptr = new int(2);
+        QCOMPARE(*ptr, 2);
+    }
+
     void move_constructor() {
         UnqPtr<int> moveFrom = make_unq<int>(2);
         UnqPtr<int> moveTo(std::move(moveFrom));

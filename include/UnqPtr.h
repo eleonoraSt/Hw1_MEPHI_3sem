@@ -23,11 +23,11 @@ public:
 
     ~UnqPtr() {if (ptr) deleter(ptr);}
 
-    UnqPtr<T> operator=(T* pointer) {
+    UnqPtr<T>& operator=(T* pointer) {
         if (ptr) deleter(ptr);
         ptr = pointer;
         deleter = default_delete<T>;  // небезопасный момент
-        return std::move(*this);  // конструктора по lvalue-ссылке нет
+        return *this;  // конструктора по lvalue-ссылке нет
     }
 
     UnqPtr<T>& operator=(const UnqPtr<T>& other) = delete;
@@ -37,7 +37,6 @@ public:
         ptr = other.ptr;
         deleter = other.deleter;
         other.ptr = nullptr;
-        //return std::move(*this);  // конструктора по lvalue-ссылке нет
         return *this;
     }
 

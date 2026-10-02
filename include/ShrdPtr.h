@@ -32,7 +32,7 @@ public:
         }
     }
 
-    ShrdPtr<T> operator=(T* pointer) {
+    ShrdPtr<T>& operator=(T* pointer) {
         (*count)--;
         if (count == 0) {
             if (ptr) deleter(ptr);
