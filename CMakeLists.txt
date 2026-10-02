@@ -36,13 +36,25 @@ qt_add_executable(testUnqPtr
     tests/TestUnqPtr.cpp
 )
 
+qt_add_executable(testShrdPtr
+    tests/TestShrdPtr.cpp
+)
+
 target_link_libraries(testUnqPtr
     PRIVATE
         Qt6::Core
         Qt6::Test
 )
 
+target_link_libraries(testShrdPtr
+    PRIVATE
+        Qt6::Core
+        Qt6::Test
+)
+
 add_test(NAME testUnqPtr COMMAND testUnqPtr)
+
+add_test(NAME testShrdPtr COMMAND testShrdPtr)
 
 install(TARGETS Sem_3_Hw_1
     BUNDLE  DESTINATION .
