@@ -15,23 +15,15 @@ private:
 public:
     ShrdPtr(): ptr(nullptr), count(new unsigned int(1)), deleter(default_delete<T>) {}
 
-    template <class Derived>
-    ShrdPtr(Derived* pointer, std::function<void(T*)> deleteFunc=default_delete<T>) {
-        ptr = dynamic_cast<T*>(pointer);
-        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
+    ShrdPtr(T* pointer, std::function<void(T*)> deleteFunc=default_delete<T>): ptr(pointer), deleter(deleteFunc) {
         count = new unsigned int(1);
-        deleter = deleteFunc;
     }
 
-    template <class Derived>
-    ShrdPtr(const ShrdPtr<Derived>& other): ptr(dynamic_cast<T*>(other.ptr)), count(new unsigned int(1)) {
-        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
-        deleter = other.deleter;
+    ShrdPtr(const ShrdPtr<T>& other): ptr(other.ptr), deleter(other.deleter), count(other.count) {
         (*count)++;
     }
 
-    template <class Derived>
-    ShrdPtr(const ShrdPtr<Derived>&& other) = delete;
+    ShrdPtr(const ShrdPtr<T>&& other) = delete;
 
     ~ShrdPtr() {
         (*count)--;
@@ -41,35 +33,30 @@ public:
         }
     }
 
-    template <class Derived>
-    ShrdPtr<T> operator=(Derived* pointer) {
+    ShrdPtr<T> operator=(T* pointer) {
         (*count)--;
         if (count == 0) {
             if (ptr) deleter(ptr);
             delete count;
         }
-        ptr = dynamic_cast<T*>(pointer);
-        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
+        ptr = pointer;
         count = new unsigned int(1);
         deleter = default_delete<T>;  // небезопасный момент
     }
 
-    template <class Derived>
-    ShrdPtr<T> operator=(const ShrdPtr<Derived>& other) {
+    ShrdPtr<T> operator=(const ShrdPtr<T>& other) {
         (*count)--;
         if (count == 0) {
             if (ptr) delete ptr;
             delete count;
         }
-        ptr = dynamic_cast<T*>(other);
-        if (ptr == nullptr) throw std::invalid_argument("shared pointer conversion failed");
+        ptr = other.ptr;
         count = other.count;
         deleter = other.deleter;
         (*count)++;
     }
 
-    template <class Derived>
-    ShrdPtr<T> operator=(const ShrdPtr<Derived>&& other) = delete;
+    ShrdPtr<T> operator=(const ShrdPtr<T>&& other) = delete;
 
     T& operator*() {
         if (deleter == array_delete<T>) throw std::invalid_argument("* not defined for array shared pointers");
