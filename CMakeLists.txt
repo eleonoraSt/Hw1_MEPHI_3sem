@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.30)
 project(Sem_3_Hw_1 LANGUAGES CXX)
 
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Widgets)
