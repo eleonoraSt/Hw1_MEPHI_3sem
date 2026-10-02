@@ -2,7 +2,6 @@
 #define SHRDPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
-#include <functional>  // deleters
 
 #include "deleters.h"
 
@@ -11,11 +10,11 @@ class ShrdPtr {
 private:
     T* ptr;
     unsigned int* count;
-    std::function<void(T*)> deleter;
+    void (*deleter)(T*);
 public:
     ShrdPtr(): ptr(nullptr), count(new unsigned int(1)), deleter(default_delete<T>) {}
 
-    ShrdPtr(T* pointer, std::function<void(T*)> deleteFunc=default_delete<T>): ptr(pointer), deleter(deleteFunc) {
+    ShrdPtr(T* pointer, void (*deleteFunc)(T*)=default_delete<T>): ptr(pointer), deleter(deleteFunc) {
         count = new unsigned int(1);
     }
 

@@ -2,7 +2,6 @@
 #define UNQPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
-#include <functional>  // deleters
 
 #include "deleters.h"
 
@@ -10,11 +9,11 @@ template <class T>
 class UnqPtr {
 private:
     T* ptr;
-    std::function<void(T*)> deleter;
+    void (*deleter)(T*);
 public:
     UnqPtr(): ptr(nullptr), deleter(default_delete<T>) {}
 
-    UnqPtr(T* pointer, std::function<void(T*)> deleteFunc=default_delete<T>): ptr(pointer), deleter(deleteFunc) {}
+    UnqPtr(T* pointer, void (*deleteFunc)(T*)=default_delete<T>): ptr(pointer), deleter(deleteFunc) {}
 
     UnqPtr(const UnqPtr<T>& other) = delete;
 
