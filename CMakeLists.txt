@@ -24,9 +24,25 @@ qt_add_executable(Sem_3_Hw_1
 
 target_link_libraries(Sem_3_Hw_1
     PRIVATE
-        Qt::Core
-        Qt::Widgets
+        Qt6::Core
+        Qt6::Widgets
 )
+
+enable_testing()
+
+find_package(Qt6 6.11 REQUIRED COMPONENTS Test)
+
+qt_add_executable(testUnqPtr
+    tests/TestUnqPtr.cpp
+)
+
+target_link_libraries(testUnqPtr
+    PRIVATE
+        Qt6::Core
+        Qt6::Test
+)
+
+add_test(NAME testUnqPtr COMMAND testUnqPtr)
 
 install(TARGETS Sem_3_Hw_1
     BUNDLE  DESTINATION .

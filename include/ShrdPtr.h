@@ -41,9 +41,10 @@ public:
         ptr = pointer;
         count = new unsigned int(1);
         deleter = default_delete<T>;  // небезопасный момент
+        return *this;
     }
 
-    ShrdPtr<T> operator=(const ShrdPtr<T>& other) {
+    ShrdPtr<T>& operator=(const ShrdPtr<T>& other) {
         (*count)--;
         if (count == 0) {
             if (ptr) delete ptr;
@@ -53,9 +54,10 @@ public:
         count = other.count;
         deleter = other.deleter;
         (*count)++;
+        return *this;
     }
 
-    ShrdPtr<T> operator=(const ShrdPtr<T>&& other) = delete;
+    ShrdPtr<T>& operator=(const ShrdPtr<T>&& other) = delete;
 
     T& operator*() {
         if (deleter == array_delete<T>) throw std::invalid_argument("* not defined for array shared pointers");
