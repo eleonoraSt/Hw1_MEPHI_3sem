@@ -1,6 +1,31 @@
+#include <ctime>
+#include <iostream>
+#include <array>
+
 #include <QTest>
 
 #include "..\include\UnqPtr.h"
+
+template <long Size>
+void unqptr_load_comparison() {
+    std::cout << "Time & memory test for array of size " << Size << "\n";
+    clock_t time = clock();
+    size_t memory;
+    std::array<UnqPtr<long>, Size> myVers;
+    for (long index = 0; index < Size; index++) myVers[Size] = make_unq<long>(index);
+    memory = sizeof myVers;
+    time = clock() - time;
+    std::cout << "Time usage: " << memory << " bytes\n";
+    std::cout << "Memory usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+
+    time = clock();
+    std::array<std::unique_ptr<long>, Size> stlVers;
+    for (long index = 0; index < Size; index++) stlVers[Size] = std::make_unique<long>(index);
+    memory = sizeof stlVers;
+    time = clock() - time;
+    std::cout << "Time usage: " << memory << " bytes\n";
+    std::cout << "Memory usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+}
 
 class TestUnqPtr: public QObject {
     Q_OBJECT
@@ -61,6 +86,10 @@ private slots:
         moveTo = std::move(moveFrom);
         QCOMPARE(*moveTo, 2);
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, *moveFrom);
+    }
+
+    void load_comparison_10() {
+        unqptr_load_comparison<10>();
     }
 };
 
