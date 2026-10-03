@@ -27,7 +27,7 @@ public:
     ~ShrdPtr() {
         (*count)--;
         if (count == 0) {
-            if (ptr) deleter(ptr);
+            deleter(ptr);
             delete count;
         }
     }
@@ -35,7 +35,7 @@ public:
     ShrdPtr<T>& operator=(T* pointer) {
         (*count)--;
         if (count == 0) {
-            if (ptr) deleter(ptr);
+            deleter(ptr);
             delete count;
         }
         ptr = pointer;
@@ -47,7 +47,7 @@ public:
     ShrdPtr<T>& operator=(const ShrdPtr<T>& other) {
         (*count)--;
         if (count == 0) {
-            if (ptr) delete ptr;
+            deleter(ptr);
             delete count;
         }
         ptr = other.ptr;

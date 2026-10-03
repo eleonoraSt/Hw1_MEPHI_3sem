@@ -21,10 +21,10 @@ public:
         other.ptr = nullptr;
     }
 
-    ~UnqPtr() {if (ptr) deleter(ptr);}
+    ~UnqPtr() {deleter(ptr);}
 
     UnqPtr<T>& operator=(T* pointer) {
-        if (ptr) deleter(ptr);
+        deleter(ptr);
         ptr = pointer;
         deleter = default_delete<T>;  // небезопасный момент
         return *this;  // конструктора по lvalue-ссылке нет
@@ -33,7 +33,7 @@ public:
     UnqPtr<T>& operator=(const UnqPtr<T>& other) = delete;
 
     UnqPtr<T>& operator=(UnqPtr<T>&& other) {
-        if (ptr) deleter(ptr);
+        deleter(ptr);
         ptr = other.ptr;
         deleter = other.deleter;
         other.ptr = nullptr;
