@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.30)
 project(Sem_3_Hw_1 LANGUAGES CXX)
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Widgets)
 
 qt_standard_project_setup()

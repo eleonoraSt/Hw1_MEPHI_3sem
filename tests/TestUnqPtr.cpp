@@ -15,16 +15,16 @@ void unqptr_load_comparison() {
     for (long index = 0; index < Size; index++) myVers[Size] = make_unq<long>(index);
     memory = sizeof myVers;
     time = clock() - time;
-    std::cout << "Time usage: " << memory << " bytes\n";
-    std::cout << "Memory usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+    std::cout << "Memory usage: " << memory << " bytes\n";
+    std::cout << "Time usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
 
     time = clock();
     std::array<std::unique_ptr<long>, Size> stlVers;
     for (long index = 0; index < Size; index++) stlVers[Size] = std::make_unique<long>(index);
     memory = sizeof stlVers;
     time = clock() - time;
-    std::cout << "Time usage: " << memory << " bytes\n";
-    std::cout << "Memory usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+    std::cout << "Memory usage: " << memory << " bytes\n";
+    std::cout << "Time usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
 }
 
 class TestUnqPtr: public QObject {
