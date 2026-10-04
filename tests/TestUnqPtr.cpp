@@ -1,7 +1,7 @@
+#include <memory>
 #include <ctime>
 #include <iostream>
 #include <array>
-
 #include <QTest>
 
 #include "..\include\UnqPtr.h"

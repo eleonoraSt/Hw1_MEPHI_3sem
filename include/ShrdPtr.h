@@ -80,7 +80,7 @@ public:
 
 template <class T, class... Args>
 ShrdPtr<T> make_shrd(Args&&... args) {
-    return ShrdPtr(new T(args...), default_delete<T>);
+    return ShrdPtr<T>(new T(args...), default_delete<T>);
 }
 
 template <class T>

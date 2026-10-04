@@ -1,6 +1,36 @@
+#include <memory>
+#include <ctime>
+#include <iostream>
+#include <array>
 #include <QTest>
 
 #include "..\include\ShrdPtr.h"
+
+template <long Size>
+void shrdptr_load_comparison() {
+    std::cout << "Time & memory test for array of size " << Size << "\n";
+    clock_t time = clock();
+    size_t memory;
+    std::array<ShrdPtr<long>, Size> myVers;
+    ShrdPtr<long>* myVersBuf;
+    for (long index = 0; index < Size; index++) {  // присваивание rvalue запрещено
+        myVersBuf = new ShrdPtr<long>(make_shrd<long>(index));
+        myVers[index] = *myVersBuf;
+        delete myVersBuf;
+    }
+    memory = sizeof myVers;
+    time = clock() - time;
+    std::cout << "Memory usage: " << memory << " bytes\n";
+    std::cout << "Time usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+
+    time = clock();
+    std::array<std::shared_ptr<long>, Size> stlVers;
+    for (long index = 0; index < Size; index++) stlVers[Size] = std::make_shared<long>(index);
+    memory = sizeof stlVers;
+    time = clock() - time;
+    std::cout << "Memory usage: " << memory << " bytes\n";
+    std::cout << "Time usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+}
 
 class TestShrdPtr: public QObject {
     Q_OBJECT
@@ -65,6 +95,10 @@ private slots:
         *(*first_ptr) = 3;
         delete first_ptr;
         QCOMPARE(*second, 3);
+    }
+
+    void load_comparison_10() {
+        shrdptr_load_comparison<10>();
     }
 };
 
