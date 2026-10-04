@@ -1,0 +1,6 @@
+{
+    QTestFalsePositive
+    Leak
+    fun:pthread_tls_init
+    obj:libwinpthread-1.dll
+}
