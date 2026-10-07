@@ -7,21 +7,24 @@
 #include "..\include\UnqPtr.h"
 
 template <long Size>
-void unqptr_load_comparison() {
-    std::cout << "Time & memory test for array of size " << Size << "\n";
+void unqptr_load() {
+    std::cout << "Time & memory test for array of UnqPtr of size " << Size << "\n";
     clock_t time = clock();
-    size_t memory;
     std::array<UnqPtr<long>, Size> myVers;
-    for (long index = 0; index < Size; index++) myVers[Size] = make_unq<long>(index);
-    memory = sizeof myVers;
+    for (long index = 0; index < Size; index++) myVers[index] = make_unq<long>(index);
+    size_t memory = sizeof myVers;
     time = clock() - time;
     std::cout << "Memory usage: " << memory << " bytes\n";
     std::cout << "Time usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
+}
 
-    time = clock();
+template <long Size>
+void unique_ptr_load() {
+    std::cout << "Time & memory test for array of std::unique_ptr of size " << Size << "\n";
+    clock_t time = clock();
     std::array<std::unique_ptr<long>, Size> stlVers;
-    for (long index = 0; index < Size; index++) stlVers[Size] = std::make_unique<long>(index);
-    memory = sizeof stlVers;
+    for (long index = 0; index < Size; index++) stlVers[index] = std::make_unique<long>(index);
+    size_t memory = sizeof stlVers;
     time = clock() - time;
     std::cout << "Memory usage: " << memory << " bytes\n";
     std::cout << "Time usage: " << ((float)time) / CLOCKS_PER_SEC << " seconds\n";
@@ -89,7 +92,33 @@ private slots:
     }
 
     void load_comparison_10() {
-        unqptr_load_comparison<10>();
+        unqptr_load<10>();
+        unique_ptr_load<10>();
+    }
+
+    void load_comparison_100() {
+        unqptr_load<100>();
+        unique_ptr_load<100>();
+    }
+
+    void load_comparison_1e3() {
+        unqptr_load<1000>();
+        unique_ptr_load<1000>();
+    }
+
+    void load_comparison_1e4() {
+        unqptr_load<10000>();
+        unique_ptr_load<10000>();
+    }
+
+    void load_comparison_1e5() {
+        unqptr_load<100000>();
+        unique_ptr_load<100000>();
+    }
+
+    void load_comparison_1e6() {
+        unqptr_load<1000000>();
+        unique_ptr_load<1000000>();
     }
 };
 

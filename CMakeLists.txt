@@ -40,13 +40,13 @@ qt_add_executable(testShrdPtr
 )
 
 target_link_libraries(testUnqPtr
-    PRIVATE
+    PRIVATE "-Wl,--stack,17000000"
         Qt6::Core
         Qt6::Test
 )
 
 target_link_libraries(testShrdPtr
-    PRIVATE
+    PRIVATE "-Wl,--stack,25000000"
         Qt6::Core
         Qt6::Test
 )
