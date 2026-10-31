@@ -22,3 +22,12 @@ void MainWindow::print() {
     }
     ui->textEdit->setText(QString::fromStdString(seqText));
 }
+
+void MainWindow::inputSlot() {
+    std::string seqText = ui->textEdit->toPlainText().toStdString();
+    std::istringstream seqStream(seqText);
+    int buf;
+    while (seqStream >> buf) {
+        seq->Append(buf);
+    }
+}
