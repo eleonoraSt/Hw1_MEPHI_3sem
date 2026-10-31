@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "include/Sequence.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -12,10 +13,15 @@ QT_END_NAMESPACE
 class MainWindow: public QMainWindow {
     Q_OBJECT
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
+    Sequence<int>* seq;
+
+    void print();
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+public slots:
+    void inputSlot();
 };
 
 #endif // MAINWINDOW_H
