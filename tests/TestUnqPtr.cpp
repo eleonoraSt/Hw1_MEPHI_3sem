@@ -97,7 +97,7 @@ private slots:
         UnqPtr<Child> derived = make_unq<Child>(2);
         UnqPtr<Parent> base = std::move(derived);
         QCOMPARE((*base).field, 2);
-        //valid = make_unq<Impostor>(2);  // если раскомментить, не скомпилится
+        //base = make_unq<Impostor>(2);  // если раскомментить, не скомпилится
     }
 
     void load_comparison_10() {
