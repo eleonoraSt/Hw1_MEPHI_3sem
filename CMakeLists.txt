@@ -17,7 +17,6 @@ qt_add_executable(Sem_3_Hw_1
     include/LinkedList.h
     include/ArraySequence.h
     include/ListSequence.h
-    tests/InheritanceExample.h
     include/Triplet.h
 )
 
@@ -32,10 +31,12 @@ enable_testing()
 find_package(Qt6 6.11 REQUIRED COMPONENTS Test)
 
 qt_add_executable(testUnqPtr
+    tests/InheritanceExample.h
     tests/TestUnqPtr.cpp
 )
 
 qt_add_executable(testShrdPtr
+    tests/InheritanceExample.h
     tests/TestShrdPtr.cpp
 )
 
