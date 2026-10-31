@@ -14,11 +14,9 @@ qt_add_executable(Sem_3_Hw_1
     include/ShrdPtr.h
     include/Sequence.h
     include/DynamicArray.h
-    include/Option.h
     include/LinkedList.h
     include/ArraySequence.h
     include/ListSequence.h
-    include/deleters.h
     tests/InheritanceExample.h
     include/Triplet.h
 )
