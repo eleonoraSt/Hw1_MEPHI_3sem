@@ -2,71 +2,119 @@
 #define UNQPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
-
-#include "deleters.h"
+#include "Pair.h"
 
 template <class T>
 class UnqPtr {
 private:
     T* ptr;
-    void (*deleter)(T*);
-public:
-    UnqPtr(): ptr(nullptr), deleter(default_delete<T>) {}
+    bool isArray;
 
-    UnqPtr(T* pointer, void (*deleteFunc)(T*)=default_delete<T>): ptr(pointer), deleter(deleteFunc) {}
+    void clear() {
+        if (isArray) {delete[] ptr;} else {delete ptr;}
+    }
+public:
+    UnqPtr(): ptr(nullptr), isArray(false) {}
+
+    UnqPtr(T* pointer, bool isItArray=false): ptr(pointer), isArray(isItArray) {}
+
+    template <class Derived>
+    UnqPtr(Derived* pointer, bool isItArray=false): isArray(isItArray) {
+        static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
+        ptr = dynamic_cast<T*>(pointer);
+    }
 
     UnqPtr(const UnqPtr<T>& other) = delete;
 
-    UnqPtr(UnqPtr<T>&& other): ptr(other.ptr), deleter(other.deleter) {
+    UnqPtr(UnqPtr<T>&& other): ptr(other.ptr), isArray(other.isArray) {
         other.ptr = nullptr;
+        other.isArray = false;
     }
 
-    ~UnqPtr() {deleter(ptr);}
+    template <class Derived>
+    UnqPtr(UnqPtr<Derived>&& other) {
+        static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
+        Pair<Derived*, bool> derivedInfo = other.Get();
+        ptr = dynamic_cast<T*>(derivedInfo.GetA());
+        isArray = derivedInfo.GetB();
+        other.ForceReset();
+    }
+
+    ~UnqPtr() {clear();}
 
     UnqPtr<T>& operator=(T* pointer) {
-        deleter(ptr);
+        clear();
         ptr = pointer;
-        deleter = default_delete<T>;  // небезопасный момент
+        isArray = false;  // небезопасный момент
+        return *this;  // конструктора по lvalue-ссылке нет
+    }
+
+    template <class Derived>
+    UnqPtr<T>& operator=(Derived* pointer) {
+        static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
+        clear();
+        ptr = dynamic_cast<T*>(pointer);
+        isArray = false;  // небезопасный момент
         return *this;  // конструктора по lvalue-ссылке нет
     }
 
     UnqPtr<T>& operator=(const UnqPtr<T>& other) = delete;
 
     UnqPtr<T>& operator=(UnqPtr<T>&& other) {
-        deleter(ptr);
+        if (&other == this) return *this;
+        clear();
         ptr = other.ptr;
-        deleter = other.deleter;
+        isArray = other.isArray;
         other.ptr = nullptr;
+        other.isArray = false;
+        return *this;
+    }
+
+    template <class Derived>
+    UnqPtr<T>& operator=(UnqPtr<Derived>&& other) {
+        static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
+        clear();
+        Pair<Derived*, bool> derivedInfo = other.Get();
+        ptr = dynamic_cast<T*>(derivedInfo.GetA());
+        isArray = derivedInfo.GetB();
+        other.ForceReset();
         return *this;
     }
 
     T& operator*() {
-        if (deleter == array_delete<T>) throw std::invalid_argument("* not defined for array unique pointers");
+        if (isArray) throw std::invalid_argument("-> not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
     }
 
     T& operator->() {
-        if (deleter == array_delete<T>) throw std::invalid_argument("-> not defined for array unique pointers");
+        if (isArray) throw std::invalid_argument("-> not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
     }
 
     T& operator[](size_t index) {
-        if (deleter == default_delete<T>) throw std::invalid_argument("[] not defined for non-array unique pointers");
+        if (!isArray) throw std::invalid_argument("[] not defined for non-array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return ptr[index];
+    }
+
+    Pair<T*, bool> Get() {return Pair<T*, bool>(ptr, isArray);}
+
+    void ForceReset() {
+        ptr = nullptr;
+        isArray = false;
     }
 };
 
 template <class T, class... Args>
 UnqPtr<T> make_unq(Args&&... args) {
-    return UnqPtr<T>(new T(args...), default_delete<T>);
+    return UnqPtr<T>(new T(args...), false);
 }
 
 template <class T>
 UnqPtr<T> make_unq_array(size_t size) {
-    return UnqPtr<T>(new T[size], array_delete<T>);
+    return UnqPtr<T>(new T[size], true);
 }
 
 #endif // UNQPTR_H

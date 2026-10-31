@@ -5,6 +5,7 @@
 #include <QTest>
 
 #include "..\include\UnqPtr.h"
+#include "InheritanceExample.h"
 
 template <long Size>
 void unqptr_load() {
@@ -66,7 +67,8 @@ private slots:
     void array_constructor() {
         int* constructFrom = new int[5];
         constructFrom[2] = 10;
-        UnqPtr<int> ptr(constructFrom, array_delete<int>);
+        //UnqPtr<int> ptr(constructFrom, array_delete<int>);
+        UnqPtr<int> ptr(constructFrom, true);
         QCOMPARE(ptr[2], 10);
     }
 
@@ -89,6 +91,13 @@ private slots:
         moveTo = std::move(moveFrom);
         QCOMPARE(*moveTo, 2);
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, *moveFrom);
+    }
+
+    void inherited_assignment() {
+        UnqPtr<Child> derived = make_unq<Child>(2);
+        UnqPtr<Parent> base = std::move(derived);
+        QCOMPARE((*base).field, 2);
+        //valid = make_unq<Impostor>(2);  // если раскомментить, не скомпилится
     }
 
     void load_comparison_10() {
