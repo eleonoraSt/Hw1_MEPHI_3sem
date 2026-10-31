@@ -2,7 +2,7 @@
 #define UNQPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
-#include "Pair.h"
+#include "Triplet.h"
 
 template <class T>
 class UnqPtr {
@@ -34,7 +34,7 @@ public:
     template <class Derived>
     UnqPtr(UnqPtr<Derived>&& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        Pair<Derived*, bool> derivedInfo = other.Get();
+        Triplet<Derived*, bool, void*> derivedInfo = other.Get();
         ptr = dynamic_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
         other.ForceReset();
@@ -45,7 +45,7 @@ public:
     UnqPtr<T>& operator=(T* pointer) {
         clear();
         ptr = pointer;
-        isArray = false;  // небезопасный момент
+        isArray = false;
         return *this;  // конструктора по lvalue-ссылке нет
     }
 
@@ -54,7 +54,7 @@ public:
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         clear();
         ptr = dynamic_cast<T*>(pointer);
-        isArray = false;  // небезопасный момент
+        isArray = false;
         return *this;  // конструктора по lvalue-ссылке нет
     }
 
@@ -74,7 +74,7 @@ public:
     UnqPtr<T>& operator=(UnqPtr<Derived>&& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         clear();
-        Pair<Derived*, bool> derivedInfo = other.Get();
+        Triplet<Derived*, bool, void*> derivedInfo = other.Get();
         ptr = dynamic_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
         other.ForceReset();
@@ -99,7 +99,7 @@ public:
         return ptr[index];
     }
 
-    Pair<T*, bool> Get() {return Pair<T*, bool>(ptr, isArray);}
+    Triplet<T*, bool, void*> Get() const {return Triplet<T*, bool, void*>(ptr, isArray, nullptr);}
 
     void ForceReset() {
         ptr = nullptr;

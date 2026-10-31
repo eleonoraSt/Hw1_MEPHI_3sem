@@ -5,6 +5,7 @@
 #include <QTest>
 
 #include "..\include\ShrdPtr.h"
+#include "InheritanceExample.h"
 
 template <long Size>
 void shrdptr_load() {
@@ -68,7 +69,7 @@ private slots:
     void array_constructor() {
         int* constructFrom = new int[5];
         constructFrom[2] = 10;
-        ShrdPtr<int> ptr(constructFrom, array_delete<int>);
+        ShrdPtr<int> ptr(constructFrom, true);
         QCOMPARE(ptr[2], 10);
     }
 
@@ -95,6 +96,14 @@ private slots:
         *(*first_ptr) = 3;
         delete first_ptr;
         QCOMPARE(*second, 3);
+    }
+
+    void inherited_assignment() {
+        ShrdPtr<Child> derived(make_shrd<Child>(2));
+        ShrdPtr<Parent> base = derived;
+        QCOMPARE((*base).field, 2);
+        //ShrdPtr<Impostor> impostor(make_shrd<Impostor>(2));
+        //base = impostor;  // если раскомментить, не скомпилится
     }
 
     void load_comparison_10() {

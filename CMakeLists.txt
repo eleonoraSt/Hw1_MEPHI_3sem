@@ -20,8 +20,7 @@ qt_add_executable(Sem_3_Hw_1
     include/ListSequence.h
     include/deleters.h
     tests/InheritanceExample.h
-    include/Pair.h
-
+    include/Triplet.h
 )
 
 target_link_libraries(Sem_3_Hw_1
