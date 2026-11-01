@@ -360,9 +360,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lastItemButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>lastItemSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>getItemButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>getItemSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>inputSlot()</slot>
   <slot>firstItemSlot()</slot>
+  <slot>lastItemSlot()</slot>
+  <slot>getItemSlot()</slot>
  </slots>
 </ui>

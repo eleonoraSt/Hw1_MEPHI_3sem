@@ -26,6 +26,8 @@ public:
 public slots:
     void inputSlot();
     void firstItemSlot();
+    void lastItemSlot();
+    void getItemSlot();
 };
 
 #endif // MAINWINDOW_H
