@@ -22,6 +22,7 @@ public:
     ~MainWindow() override;
 public slots:
     void inputSlot();
+    void firstItemSlot();
 };
 
 #endif // MAINWINDOW_H

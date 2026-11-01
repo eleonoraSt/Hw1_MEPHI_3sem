@@ -9,7 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    seq = nullptr;
+    seq = new ListSequence<int>();
 }
 
 MainWindow::~MainWindow() {
@@ -40,4 +40,15 @@ void MainWindow::inputSlot() {
     while (seqStream >> buf) {
         seq->Append(buf);
     }
+}
+
+void MainWindow::firstItemSlot() {
+    int first;
+    try {
+        first = seq->GetFirst();
+    } catch (std::out_of_range msg) {
+        ui->label->setText(msg.what());
+        return;
+    }
+    ui->firstItemOut->setText(QString::number(first));
 }

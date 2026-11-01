@@ -340,5 +340,42 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>inputSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>398</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>firstItemButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>firstItemSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>38</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>inputSlot()</slot>
+  <slot>firstItemSlot()</slot>
+ </slots>
 </ui>
