@@ -81,19 +81,19 @@ public:
         return *this;
     }
 
-    T& operator*() {
+    T& operator*() const {
         if (isArray) throw std::invalid_argument("-> not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return *ptr;
     }
 
-    T& operator->() {
+    T* operator->() const {
         if (isArray) throw std::invalid_argument("-> not defined for array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
-        return *ptr;
+        return ptr;
     }
 
-    T& operator[](size_t index) {
+    T& operator[](size_t index) const {
         if (!isArray) throw std::invalid_argument("[] not defined for non-array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return ptr[index];

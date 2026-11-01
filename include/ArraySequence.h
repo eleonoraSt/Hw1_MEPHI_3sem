@@ -34,7 +34,7 @@ public:
     }
 
     ~ArraySequence() override {
-        delete seq;
+        seq = nullptr;
     }
 
     T GetFirst() const override {

@@ -18,7 +18,7 @@ public:
     virtual Sequence<T>* Append(T item) = 0;
     virtual Sequence<T>* Prepend(T item) = 0;
     virtual Sequence<T>* InsertAt(T item, size_t index) = 0;
-    virtual Sequence<T>* Concat(Sequence<T>& list) = 0;
+    virtual Sequence<T>* Concat(Sequence<T>* list) = 0;
 
     virtual Sequence<T>* Map(std::function<T(T)> func) const = 0;
     virtual Sequence<T>* Where(std::function<bool(T)> func) const = 0;
