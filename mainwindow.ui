@@ -141,7 +141,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Вставить в начало</string>
+     <string>Вставить в конец</string>
     </property>
    </widget>
    <widget class="QPushButton" name="prependButton">
@@ -154,7 +154,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Вставить в конец</string>
+     <string>Вставить в начало</string>
     </property>
    </widget>
    <widget class="QPushButton" name="insertButton">
@@ -175,7 +175,7 @@
      <rect>
       <x>10</x>
       <y>400</y>
-      <width>301</width>
+      <width>621</width>
       <height>16</height>
      </rect>
     </property>
@@ -300,10 +300,23 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="insertIn">
+   <widget class="QLineEdit" name="insertItemIn">
     <property name="geometry">
      <rect>
       <x>480</x>
+      <y>220</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="insertIndexIn">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
       <y>220</y>
       <width>61</width>
       <height>20</height>
@@ -392,11 +405,96 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sliceButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>sliceSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>appendButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>appendSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>188</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>prependButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>prependSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>insertButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>insertSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>sizeSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>inputSlot()</slot>
   <slot>firstItemSlot()</slot>
   <slot>lastItemSlot()</slot>
   <slot>getItemSlot()</slot>
+  <slot>sliceSlot()</slot>
+  <slot>prependSlot()</slot>
+  <slot>appendSlot()</slot>
+  <slot>insertSlot()</slot>
+  <slot>sizeSlot()</slot>
  </slots>
 </ui>

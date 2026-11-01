@@ -28,6 +28,11 @@ public slots:
     void firstItemSlot();
     void lastItemSlot();
     void getItemSlot();
+    void sliceSlot();
+    void sizeSlot();
+    void prependSlot();
+    void appendSlot();
+    void insertSlot();
 };
 
 #endif // MAINWINDOW_H
