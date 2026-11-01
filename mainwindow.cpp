@@ -27,6 +27,22 @@ void MainWindow::print() {
     ui->textEdit->setText(QString::fromStdString(seqText));
 }
 
+void MainWindow::clearMsg() {
+    ui->label->setText("");
+}
+
+void MainWindow::clearOutput() {
+    ui->firstItemOut->setText("");
+    ui->lastItemOut->setText("");
+    ui->getItemOut->setText("");
+}
+
+void MainWindow::modified() {
+    print();
+    clearMsg();
+    clearOutput();
+}
+
 void MainWindow::inputSlot() {
     delete seq;
     if (ui->listRadioButton->isChecked()) {
@@ -40,6 +56,8 @@ void MainWindow::inputSlot() {
     while (seqStream >> buf) {
         seq->Append(buf);
     }
+    clearMsg();
+    clearOutput();
 }
 
 void MainWindow::firstItemSlot() {
@@ -51,4 +69,5 @@ void MainWindow::firstItemSlot() {
         return;
     }
     ui->firstItemOut->setText(QString::number(first));
+    clearMsg();
 }

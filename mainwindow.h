@@ -17,6 +17,9 @@ private:
     Sequence<int>* seq;
 
     void print();
+    void clearMsg();
+    void clearOutput();
+    void modified();
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
