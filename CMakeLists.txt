@@ -8,16 +8,6 @@ qt_add_executable(Sem_3_Hw_1
     WIN32 MACOSX_BUNDLE
     main.cpp
     mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
-    include/UnqPtr.h
-    include/ShrdPtr.h
-    include/Sequence.h
-    include/DynamicArray.h
-    include/LinkedList.h
-    include/ArraySequence.h
-    include/ListSequence.h
-    include/Triplet.h
 )
 
 target_link_libraries(Sem_3_Hw_1
@@ -31,12 +21,10 @@ enable_testing()
 find_package(Qt6 6.11 REQUIRED COMPONENTS Test)
 
 qt_add_executable(testUnqPtr
-    tests/InheritanceExample.h
     tests/TestUnqPtr.cpp
 )
 
 qt_add_executable(testShrdPtr
-    tests/InheritanceExample.h
     tests/TestShrdPtr.cpp
 )
 
