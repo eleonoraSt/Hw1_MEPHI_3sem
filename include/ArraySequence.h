@@ -95,7 +95,7 @@ public:
         if (seq->GetSize() == size) {
             seq->Resize(size + CAPACITY_ADD);
         }
-        for (size_t current = size; current >= index; current--) {
+        for (size_t current = size; current > index; current--) {
             seq->Set(current, seq->Get(current - 1));
         }
         seq->Set(index, item);

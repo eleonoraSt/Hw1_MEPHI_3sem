@@ -7,8 +7,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <iostream>
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     seq = new ListSequence<int>();
@@ -22,10 +20,8 @@ MainWindow::~MainWindow() {
 void MainWindow::print() {
     std::ostringstream seqStream;
     size_t size = seq->GetLength();
-    std::cout << "Starting printing\n" << size << "\n";
     for (size_t index = 0; index < size; index++) {
         seqStream << seq->Get(index) << " ";
-        std::cout << seq->Get(index) << "\n";
     }
     ui->textEdit->setText(QString::fromStdString(seqStream.str()));
 }
