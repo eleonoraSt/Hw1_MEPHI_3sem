@@ -11,9 +11,12 @@ private:
     unsigned int* count;
     bool isArray;
 
-    void clear() {
-        if (isArray) {delete[] ptr;} else {delete ptr;}
-        delete count;
+    void detract() {
+        (*count)--;
+        if (*count == 0) {
+            delete count;
+            if (isArray) {delete[] ptr;} else {delete ptr;}
+        }
     }
 public:
     ShrdPtr(): ptr(nullptr), count(new unsigned int(1)), isArray(false) {}
@@ -45,12 +48,12 @@ public:
 
     ~ShrdPtr() {
         (*count)--;
-        if (*count == 0) clear();
+        if (*count == 0) detract();
     }
 
     ShrdPtr<T>& operator=(T* pointer) {
         (*count)--;
-        if (*count == 0) clear();
+        if (*count == 0) detract();
         ptr = pointer;
         count = new unsigned int(1);
         isArray = false;
@@ -61,7 +64,7 @@ public:
     ShrdPtr<T>& operator=(Derived* pointer) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         (*count)--;
-        if (*count == 0) clear();
+        if (*count == 0) detract();
         ptr = static_cast<T*>(pointer);
         count = new unsigned int(1);
         isArray = false;
@@ -70,7 +73,7 @@ public:
 
     ShrdPtr<T>& operator=(const ShrdPtr<T>& other) {
         (*count)--;
-        if (*count == 0) clear();
+        if (*count == 0) detract();
         ptr = other.ptr;
         count = other.count;
         isArray = other.isArray;
@@ -82,7 +85,7 @@ public:
     ShrdPtr<T>& operator=(const ShrdPtr<Derived>& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         (*count)--;
-        if (*count == 0) clear();
+        if (*count == 0) detract();
         Triplet<Derived*, bool, unsigned int*> derivedInfo = other.Get();
         ptr = static_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
