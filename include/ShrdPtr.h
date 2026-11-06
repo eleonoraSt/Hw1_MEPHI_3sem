@@ -23,7 +23,7 @@ public:
     template <class Derived>
     ShrdPtr(Derived* pointer, bool isItArray=false): isArray(isItArray) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        ptr = dynamic_cast<T*>(pointer);
+        ptr = static_cast<T*>(pointer);
         count = new unsigned int(1);
     }
 
@@ -35,7 +35,7 @@ public:
     ShrdPtr(const ShrdPtr<Derived>& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         Triplet<Derived*, bool, unsigned int*> derivedInfo = other.Get();
-        ptr = dynamic_cast<T*>(derivedInfo.GetA());
+        ptr = static_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
         count = derivedInfo.GetC();
         (*count)++;
@@ -62,7 +62,7 @@ public:
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         (*count)--;
         if (*count == 0) clear();
-        ptr = dynamic_cast<T*>(pointer);
+        ptr = static_cast<T*>(pointer);
         count = new unsigned int(1);
         isArray = false;
         return *this;
@@ -84,7 +84,7 @@ public:
         (*count)--;
         if (*count == 0) clear();
         Triplet<Derived*, bool, unsigned int*> derivedInfo = other.Get();
-        ptr = dynamic_cast<T*>(derivedInfo.GetA());
+        ptr = static_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
         count = derivedInfo.GetC();
         (*count)++;

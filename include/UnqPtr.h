@@ -21,7 +21,7 @@ public:
     template <class Derived>
     UnqPtr(Derived* pointer, bool isItArray=false): isArray(isItArray) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        ptr = dynamic_cast<T*>(pointer);
+        ptr = static_cast<T*>(pointer);
     }
 
     UnqPtr(const UnqPtr<T>& other) = delete;
@@ -35,7 +35,7 @@ public:
     UnqPtr(UnqPtr<Derived>&& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         Triplet<Derived*, bool, void*> derivedInfo = other.Get();
-        ptr = dynamic_cast<T*>(derivedInfo.GetA());
+        ptr = static_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
         other.ForceReset();
     }
@@ -53,7 +53,7 @@ public:
     UnqPtr<T>& operator=(Derived* pointer) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         clear();
-        ptr = dynamic_cast<T*>(pointer);
+        ptr = static_cast<T*>(pointer);
         isArray = false;
         return *this;  // конструктора по lvalue-ссылке нет
     }
@@ -75,7 +75,7 @@ public:
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         clear();
         Triplet<Derived*, bool, void*> derivedInfo = other.Get();
-        ptr = dynamic_cast<T*>(derivedInfo.GetA());
+        ptr = static_cast<T*>(derivedInfo.GetA());
         isArray = derivedInfo.GetB();
         other.ForceReset();
         return *this;
