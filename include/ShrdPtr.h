@@ -2,7 +2,7 @@
 #define SHRDPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
-#include "Triplet.h"
+//#include "Triplet.h"
 
 template <class T>
 class ShrdPtr {
@@ -10,6 +10,9 @@ private:
     T* ptr;
     unsigned int* count;
     bool isArray;
+
+    template <class U>
+    friend class ShrdPtr;
 
     void detract() {
         (*count)--;
@@ -37,23 +40,20 @@ public:
     template <class Derived>
     ShrdPtr(const ShrdPtr<Derived>& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        Triplet<Derived*, bool, unsigned int*> derivedInfo = other.Get();
-        ptr = static_cast<T*>(derivedInfo.GetA());
-        isArray = derivedInfo.GetB();
-        count = derivedInfo.GetC();
+        ptr = static_cast<T*>(other.ptr);
+        isArray = other.isArray;
+        count = other.count;
         (*count)++;
     }
 
     ShrdPtr(const ShrdPtr<T>&& other) = delete;
 
     ~ShrdPtr() {
-        (*count)--;
-        if (*count == 0) detract();
+        detract();
     }
 
     ShrdPtr<T>& operator=(T* pointer) {
-        (*count)--;
-        if (*count == 0) detract();
+        detract();
         ptr = pointer;
         count = new unsigned int(1);
         isArray = false;
@@ -63,8 +63,7 @@ public:
     template <class Derived>
     ShrdPtr<T>& operator=(Derived* pointer) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        (*count)--;
-        if (*count == 0) detract();
+        detract();
         ptr = static_cast<T*>(pointer);
         count = new unsigned int(1);
         isArray = false;
@@ -72,8 +71,7 @@ public:
     }
 
     ShrdPtr<T>& operator=(const ShrdPtr<T>& other) {
-        (*count)--;
-        if (*count == 0) detract();
+        detract();
         ptr = other.ptr;
         count = other.count;
         isArray = other.isArray;
@@ -84,12 +82,10 @@ public:
     template <class Derived>
     ShrdPtr<T>& operator=(const ShrdPtr<Derived>& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        (*count)--;
-        if (*count == 0) detract();
-        Triplet<Derived*, bool, unsigned int*> derivedInfo = other.Get();
-        ptr = static_cast<T*>(derivedInfo.GetA());
-        isArray = derivedInfo.GetB();
-        count = derivedInfo.GetC();
+        detract();
+        ptr = static_cast<T*>(other.ptr);
+        isArray = other.isArray;
+        count = other.count;
         (*count)++;
         return *this;
     }
@@ -113,8 +109,6 @@ public:
         if (ptr == nullptr) throw std::invalid_argument("nullptr shared pointer");
         return ptr[index];
     }
-
-    Triplet<T*, bool, unsigned int*> Get() const {return Triplet<T*, bool, unsigned int*>(ptr, isArray, count);}
 };
 
 template <class T, class... Args>

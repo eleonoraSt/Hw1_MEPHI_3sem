@@ -2,13 +2,16 @@
 #define UNQPTR_H
 
 #include <stdexcept>  // ошибки при nullptr
-#include "Triplet.h"
+//#include "Triplet.h"
 
 template <class T>
 class UnqPtr {
 private:
     T* ptr;
     bool isArray;
+
+    template <class U>
+    friend class UnqPtr;
 
     void clear() {
         if (isArray) {delete[] ptr;} else {delete ptr;}
@@ -28,16 +31,14 @@ public:
 
     UnqPtr(UnqPtr<T>&& other): ptr(other.ptr), isArray(other.isArray) {
         other.ptr = nullptr;
-        other.isArray = false;
     }
 
     template <class Derived>
     UnqPtr(UnqPtr<Derived>&& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
-        Triplet<Derived*, bool, void*> derivedInfo = other.Get();
-        ptr = static_cast<T*>(derivedInfo.GetA());
-        isArray = derivedInfo.GetB();
-        other.ForceReset();
+        ptr = static_cast<T*>(other.ptr);
+        isArray = other.isArray;
+        other.ptr = nullptr;
     }
 
     ~UnqPtr() {clear();}
@@ -74,10 +75,9 @@ public:
     UnqPtr<T>& operator=(UnqPtr<Derived>&& other) {
         static_assert(std::is_base_of<T, Derived>::value, "Argument must be of the target class or derived from it");
         clear();
-        Triplet<Derived*, bool, void*> derivedInfo = other.Get();
-        ptr = static_cast<T*>(derivedInfo.GetA());
-        isArray = derivedInfo.GetB();
-        other.ForceReset();
+        ptr = static_cast<T*>(other.ptr);
+        isArray = other.isArray;
+        other.ptr = nullptr;
         return *this;
     }
 
@@ -97,13 +97,6 @@ public:
         if (!isArray) throw std::invalid_argument("[] not defined for non-array unique pointers");
         if (ptr == nullptr) throw std::invalid_argument("nullptr unique pointer");
         return ptr[index];
-    }
-
-    Triplet<T*, bool, void*> Get() const {return Triplet<T*, bool, void*>(ptr, isArray, nullptr);}
-
-    void ForceReset() {
-        ptr = nullptr;
-        isArray = false;
     }
 };
 
